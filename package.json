@@ -1,0 +1,64 @@
+{
+  "name": "closecrm-node",
+  "version": "1.0.0",
+  "description": "Unofficial Close.com API client for Node.js with TypeScript support",
+  "main": "lib/close.com.js",
+  "types": "lib/close.com.d.ts",
+  "files": [
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "mocha test/closecom.test.js",
+    "test:integration": "mocha test/integration.test.js",
+    "test:manual": "node test/manual-test.js",
+    "test:all": "npm run test && npm run test:integration",
+    "test:watch": "mocha test/closecom.test.js --watch",
+    "lint": "eslint lib/",
+    "docs": "jsdoc -c jsdoc.json",
+    "prepublishOnly": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timdev-ger/closecrm-node.git"
+  },
+  "keywords": [
+    "closecrm",
+    "close",
+    "close.com",
+    "close-crm",
+    "crm",
+    "sales",
+    "leads",
+    "contacts",
+    "api",
+    "api-client",
+    "sdk",
+    "client",
+    "rest",
+    "rest-api",
+    "typescript",
+    "nodejs",
+    "wrapper"
+  ],
+  "author": "Tim Querengaesser <contact@timdev.info> (https://github.com/timdev-ger)",
+  "contributors": [
+    "Tim Querengaesser <contact@timdev.info>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/timdev-ger/closecrm-node/issues"
+  },
+  "homepage": "https://github.com/timdev-ger/closecrm-node#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "chai": "^4.3.0",
+    "eslint": "^8.0.0",
+    "jsdoc": "^4.0.0"
+  },
+  "dependencies": {}
+}
