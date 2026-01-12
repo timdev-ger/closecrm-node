@@ -10,6 +10,9 @@ declare module 'closecrm-node' {
     limit?: number;
     skip?: number;
     fields?: string;
+    _limit?: number;
+    _skip?: number;
+    _fields?: string;
     [key: string]: any;
   }
 
@@ -629,7 +632,6 @@ declare module 'closecrm-node' {
     webhook: WebhookResource;
     email_thread: EmailThreadResource;
     connected_account: ConnectedAccountResource;
-    import: ImportResource;
     bulk: BulkResource;
 
     query(): QueryBuilder;
