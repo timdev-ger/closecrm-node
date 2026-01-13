@@ -119,8 +119,71 @@ async function runTests() {
     console.log('✅ Streamed leads:', streamCount);
     console.log();
 
-    // Test 11: Error Handling
-    console.log('1️⃣1️⃣  Testing: Error Handling');
+    // Test 11: WhatsApp Message Activity
+    console.log('1️⃣1️⃣  Testing: api.activity.whatsapp_message.search()');
+    const whatsappResult = await api.activity.whatsapp_message.search({ _limit: 5 });
+    console.log('✅ WhatsApp messages found:', whatsappResult.data.length);
+    console.log();
+
+    // Test 12: Custom Objects
+    console.log('1️⃣2️⃣  Testing: api.custom_object_type.list()');
+    const customObjectTypes = await api.custom_object_type.list();
+    console.log('✅ Custom Object Types found:', customObjectTypes.data.length);
+    if (customObjectTypes.data.length > 0) {
+      console.log('   First type:', customObjectTypes.data[0].name);
+    }
+    console.log();
+
+    // Test 13: Email Threads
+    console.log('1️⃣3️⃣  Testing: api.email_thread.list()');
+    const emailThreads = await api.email_thread.list({ _limit: 5 });
+    console.log('✅ Email threads found:', emailThreads.data.length);
+    console.log();
+
+    // Test 14: Connected Accounts
+    console.log('1️⃣4️⃣  Testing: api.connected_account.list()');
+    const connectedAccounts = await api.connected_account.list();
+    console.log('✅ Connected accounts found:', connectedAccounts.data.length);
+    console.log();
+
+    // Test 15: Events
+    console.log('1️⃣5️⃣  Testing: api.event.search()');
+    const events = await api.event.search({ _limit: 5 });
+    console.log('✅ Events found:', events.data.length);
+    console.log();
+
+    // Test 16: Reports (Activity Metrics)
+    console.log('1️⃣6️⃣  Testing: api.report.activity_metrics()');
+    const activityMetrics = await api.report.activity_metrics();
+    console.log('✅ Activity metrics available:', Array.isArray(activityMetrics) ? activityMetrics.length : 'Response received');
+    console.log();
+
+    // Test 17: Sequences
+    console.log('1️⃣7️⃣  Testing: api.sequence.search()');
+    const sequences = await api.sequence.search({ _limit: 5 });
+    console.log('✅ Sequences found:', sequences.data.length);
+    console.log();
+
+    // Test 18: Email Templates
+    console.log('1️⃣8️⃣  Testing: api.email_template.search()');
+    const templates = await api.email_template.search({ _limit: 5 });
+    console.log('✅ Email templates found:', templates.data.length);
+    console.log();
+
+    // Test 19: Pipelines
+    console.log('1️⃣9️⃣  Testing: api.pipeline.list()');
+    const pipelines = await api.pipeline.list();
+    console.log('✅ Pipelines found:', pipelines.data.length);
+    console.log();
+
+    // Test 20: Lead Status
+    console.log('2️⃣0️⃣  Testing: api.status.lead.list()');
+    const leadStatuses = await api.status.lead.list();
+    console.log('✅ Lead statuses found:', leadStatuses.data.length);
+    console.log();
+
+    // Test 21: Error Handling
+    console.log('2️⃣1️⃣  Testing: Error Handling');
     try {
       await api.lead.read('invalid_id_12345');
     } catch (error) {
@@ -130,8 +193,8 @@ async function runTests() {
     }
     console.log();
 
-    // Test 12: Validation
-    console.log('1️⃣2️⃣  Testing: Input Validation');
+    // Test 22: Validation
+    console.log('2️⃣2️⃣  Testing: Input Validation');
     try {
       await api.lead.create({});
     } catch (error) {

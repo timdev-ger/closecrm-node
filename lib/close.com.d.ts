@@ -196,6 +196,24 @@ declare module 'closecrm-node' {
     [key: string]: any;
   }
 
+  export interface WhatsAppMessage extends Activity {
+    _type: 'WhatsAppMessage';
+    external_whatsapp_message_id: string;
+    message_markdown: string;
+    message_html?: string;
+    direction?: 'incoming' | 'outgoing';
+    status?: string;
+    response_to_id?: string;
+    integration_link?: string;
+    attachments?: Array<{
+      url: string;
+      filename: string;
+      content_type: string;
+      size?: number;
+    }>;
+    [key: string]: any;
+  }
+
   export interface Task {
     id: string;
     lead_id?: string;
@@ -221,10 +239,38 @@ declare module 'closecrm-node' {
     accepts_multiple_values?: boolean;
     editable_with_roles?: string[];
     required?: boolean;
+    custom_object_type_id?: string;
     organization_id: string;
     created_by?: string;
     date_created: string;
     date_updated: string;
+    [key: string]: any;
+  }
+
+  export interface CustomObjectType {
+    id: string;
+    name: string;
+    name_plural: string;
+    description?: string;
+    api_create_only?: boolean;
+    editable_with_roles?: string[];
+    fields?: CustomField[];
+    back_reference_fields?: CustomField[];
+    organization_id: string;
+    date_created: string;
+    date_updated: string;
+    [key: string]: any;
+  }
+
+  export interface CustomObject {
+    id: string;
+    custom_object_type_id: string;
+    lead_id: string;
+    name: string;
+    custom?: Record<string, any>;
+    date_created: string;
+    date_updated: string;
+    organization_id: string;
     [key: string]: any;
   }
 
@@ -438,6 +484,14 @@ declare module 'closecrm-node' {
     delete(id: string): Promise<void>;
   }
 
+  export interface WhatsAppMessageResource {
+    search(options?: SearchOptions): Promise<PaginatedResponse<WhatsAppMessage>>;
+    create(data: Partial<WhatsAppMessage>, queryParams?: { send_to_inbox?: boolean }): Promise<WhatsAppMessage>;
+    read(id: string): Promise<WhatsAppMessage>;
+    update(id: string, data: Partial<WhatsAppMessage>): Promise<WhatsAppMessage>;
+    delete(id: string): Promise<void>;
+  }
+
   export interface ActivityResource {
     search(options?: SearchOptions): Promise<PaginatedResponse<Activity>>;
     note: NoteResource;
@@ -445,6 +499,7 @@ declare module 'closecrm-node' {
     call: CallResource;
     sms: SMSResource;
     meeting: MeetingResource;
+    whatsapp_message: WhatsAppMessageResource;
   }
 
   export interface OpportunityResource {
@@ -476,6 +531,7 @@ declare module 'closecrm-node' {
     contact: CustomFieldSubResource;
     opportunity: CustomFieldSubResource;
     activity: CustomFieldSubResource;
+    custom_object_type: CustomFieldSubResource;
   }
 
   export interface CustomActivityResource {
@@ -484,6 +540,22 @@ declare module 'closecrm-node' {
     read(type: string, id: string): Promise<Activity>;
     update(type: string, id: string, data: any): Promise<Activity>;
     delete(type: string, id: string): Promise<void>;
+  }
+
+  export interface CustomObjectTypeResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<CustomObjectType>>;
+    create(data: Partial<CustomObjectType>): Promise<CustomObjectType>;
+    read(id: string): Promise<CustomObjectType>;
+    update(id: string, data: Partial<CustomObjectType>): Promise<CustomObjectType>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface CustomObjectResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<CustomObject>>;
+    create(data: Partial<CustomObject>): Promise<CustomObject>;
+    read(id: string): Promise<CustomObject>;
+    update(id: string, data: Partial<CustomObject>): Promise<CustomObject>;
+    delete(id: string): Promise<void>;
   }
 
   export interface UserResource {
@@ -553,8 +625,87 @@ declare module 'closecrm-node' {
   }
 
   export interface ReportResource {
-    list(options?: SearchOptions): Promise<PaginatedResponse<Report>>;
-    read(id: string, options?: SearchOptions): Promise<Report>;
+    // List predefined metrics used in activity reports
+    activity_metrics(): Promise<PaginatedResponse<any>>;
+    
+    // Get an activity report
+    activity(data: {
+      datetime_range?: { start: string; end: string };
+      relative_range?: string;
+      query?: any;
+      users?: string[];
+      type: 'overview' | 'comparison';
+      metrics: string[];
+    }): Promise<any>;
+    
+    // Get sent emails report grouped by template
+    sent_emails(organizationId: string, options?: {
+      user_id?: string;
+      date_start?: string;
+      date_end?: string;
+    }): Promise<any>;
+    
+    // Get lead status change report
+    lead_statuses(organizationId: string, options?: {
+      date_start?: string;
+      date_end?: string;
+      query?: string;
+      smart_view_id?: string;
+    }): Promise<any>;
+    
+    // Get opportunity status change report
+    opportunity_statuses(organizationId: string, options?: {
+      user_id?: string;
+      date_start?: string;
+      date_end?: string;
+      query?: string;
+      smart_view_id?: string;
+    }): Promise<any>;
+    
+    // Get custom report
+    custom(organizationId: string, options?: {
+      query?: string;
+      x?: string;
+      y?: string;
+      interval?: string;
+      transform_y?: 'sum' | 'avg' | 'min' | 'max';
+      group_by?: string;
+      start?: string;
+      end?: string;
+    }): Promise<any>;
+    
+    // Get custom report fields
+    custom_fields(): Promise<any>;
+    
+    // Get opportunity funnel report (totals)
+    funnel_totals(data: {
+      pipeline: string;
+      type: 'created-cohort' | 'active-stage-cohort';
+      report_relative_range?: string;
+      report_datetime_range?: { start: string; end: string };
+      cohort_relative_range?: string;
+      cohort_datetime_range?: { start: string; end: string };
+      compared_relative_range?: string;
+      compared_datetime_range?: string;
+      compared_custom_range?: { start: string; end: string };
+      query?: any;
+      users?: string[];
+    }): Promise<any>;
+    
+    // Get opportunity funnel report (stages)
+    funnel_stages(data: {
+      pipeline: string;
+      type: 'created-cohort' | 'active-stage-cohort';
+      report_relative_range?: string;
+      report_datetime_range?: { start: string; end: string };
+      cohort_relative_range?: string;
+      cohort_datetime_range?: { start: string; end: string };
+      compared_relative_range?: string;
+      compared_datetime_range?: string;
+      compared_custom_range?: { start: string; end: string };
+      query?: any;
+      users?: string[];
+    }): Promise<any>;
   }
 
   export interface EventResource {
@@ -618,6 +769,8 @@ declare module 'closecrm-node' {
     task: TaskResource;
     custom_field: CustomFieldResource;
     custom_activity: CustomActivityResource;
+    custom_object_type: CustomObjectTypeResource;
+    custom_object: CustomObjectResource;
     user: UserResource;
     organization: OrganizationResource;
     pipeline: PipelineResource;
