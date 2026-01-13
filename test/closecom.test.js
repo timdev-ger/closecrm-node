@@ -71,6 +71,7 @@ describe('Closecom', () => {
       expect(api.activity.call).to.be.an('object');
       expect(api.activity.sms).to.be.an('object');
       expect(api.activity.meeting).to.be.an('object');
+      expect(api.activity.whatsapp_message).to.be.an('object');
     });
 
     it('should initialize opportunity resource', () => {
@@ -89,6 +90,34 @@ describe('Closecom', () => {
       expect(api.custom_field.contact).to.be.an('object');
       expect(api.custom_field.opportunity).to.be.an('object');
       expect(api.custom_field.activity).to.be.an('object');
+      expect(api.custom_field.custom_object_type).to.be.an('object');
+    });
+
+    it('should initialize custom_activity resource', () => {
+      expect(api.custom_activity).to.be.an('object');
+      expect(api.custom_activity.search).to.be.a('function');
+      expect(api.custom_activity.create).to.be.a('function');
+      expect(api.custom_activity.read).to.be.a('function');
+      expect(api.custom_activity.update).to.be.a('function');
+      expect(api.custom_activity.delete).to.be.a('function');
+    });
+
+    it('should initialize custom_object_type resource', () => {
+      expect(api.custom_object_type).to.be.an('object');
+      expect(api.custom_object_type.list).to.be.a('function');
+      expect(api.custom_object_type.create).to.be.a('function');
+      expect(api.custom_object_type.read).to.be.a('function');
+      expect(api.custom_object_type.update).to.be.a('function');
+      expect(api.custom_object_type.delete).to.be.a('function');
+    });
+
+    it('should initialize custom_object resource', () => {
+      expect(api.custom_object).to.be.an('object');
+      expect(api.custom_object.list).to.be.a('function');
+      expect(api.custom_object.create).to.be.a('function');
+      expect(api.custom_object.read).to.be.a('function');
+      expect(api.custom_object.update).to.be.a('function');
+      expect(api.custom_object.delete).to.be.a('function');
     });
 
     it('should initialize user resource', () => {
@@ -101,6 +130,95 @@ describe('Closecom', () => {
       expect(api.webhook).to.be.an('object');
       expect(api.webhook.list).to.be.a('function');
       expect(api.webhook.create).to.be.a('function');
+    });
+
+    it('should initialize email_thread resource', () => {
+      expect(api.email_thread).to.be.an('object');
+      expect(api.email_thread.list).to.be.a('function');
+      expect(api.email_thread.read).to.be.a('function');
+    });
+
+    it('should initialize connected_account resource', () => {
+      expect(api.connected_account).to.be.an('object');
+      expect(api.connected_account.list).to.be.a('function');
+      expect(api.connected_account.read).to.be.a('function');
+    });
+
+    it('should initialize event resource', () => {
+      expect(api.event).to.be.an('object');
+      expect(api.event.search).to.be.a('function');
+      expect(api.event.read).to.be.a('function');
+    });
+
+    it('should initialize report resource', () => {
+      expect(api.report).to.be.an('object');
+      expect(api.report.activity_metrics).to.be.a('function');
+      expect(api.report.activity).to.be.a('function');
+      expect(api.report.sent_emails).to.be.a('function');
+      expect(api.report.lead_statuses).to.be.a('function');
+      expect(api.report.opportunity_statuses).to.be.a('function');
+      expect(api.report.custom).to.be.a('function');
+      expect(api.report.custom_fields).to.be.a('function');
+      expect(api.report.funnel_totals).to.be.a('function');
+      expect(api.report.funnel_stages).to.be.a('function');
+    });
+
+    it('should initialize sequence resource', () => {
+      expect(api.sequence).to.be.an('object');
+      expect(api.sequence.search).to.be.a('function');
+      expect(api.sequence.create).to.be.a('function');
+      expect(api.sequence.read).to.be.a('function');
+      expect(api.sequence.update).to.be.a('function');
+      expect(api.sequence.delete).to.be.a('function');
+    });
+
+    it('should initialize sequence_subscription resource', () => {
+      expect(api.sequence_subscription).to.be.an('object');
+      expect(api.sequence_subscription.list).to.be.a('function');
+      expect(api.sequence_subscription.create).to.be.a('function');
+      expect(api.sequence_subscription.read).to.be.a('function');
+      expect(api.sequence_subscription.update).to.be.a('function');
+      expect(api.sequence_subscription.delete).to.be.a('function');
+    });
+
+    it('should initialize saved_search resource', () => {
+      expect(api.saved_search).to.be.an('object');
+      expect(api.saved_search.list).to.be.a('function');
+      expect(api.saved_search.create).to.be.a('function');
+      expect(api.saved_search.read).to.be.a('function');
+      expect(api.saved_search.update).to.be.a('function');
+      expect(api.saved_search.delete).to.be.a('function');
+    });
+
+    it('should initialize email_template resource', () => {
+      expect(api.email_template).to.be.an('object');
+      expect(api.email_template.search).to.be.a('function');
+      expect(api.email_template.create).to.be.a('function');
+      expect(api.email_template.read).to.be.a('function');
+      expect(api.email_template.update).to.be.a('function');
+      expect(api.email_template.delete).to.be.a('function');
+    });
+
+    it('should initialize status resource', () => {
+      expect(api.status).to.be.an('object');
+      expect(api.status.lead).to.be.an('object');
+      expect(api.status.opportunity).to.be.an('object');
+    });
+
+    it('should initialize pipeline resource', () => {
+      expect(api.pipeline).to.be.an('object');
+      expect(api.pipeline.list).to.be.a('function');
+      expect(api.pipeline.create).to.be.a('function');
+      expect(api.pipeline.read).to.be.a('function');
+      expect(api.pipeline.update).to.be.a('function');
+      expect(api.pipeline.delete).to.be.a('function');
+    });
+
+    it('should initialize organization resource', () => {
+      expect(api.organization).to.be.an('object');
+      expect(api.organization.list).to.be.a('function');
+      expect(api.organization.read).to.be.a('function');
+      expect(api.organization.update).to.be.a('function');
     });
 
     it('should initialize bulk resource', () => {
@@ -326,6 +444,116 @@ describe('Closecom', () => {
       } catch (error) {
         expect(error.message).to.include('Missing required fields: lead_id');
       }
+    });
+  });
+
+
+  describe('Activity Sub-Resources', () => {
+    it('should have all CRUD methods for note', () => {
+      expect(api.activity.note.search).to.be.a('function');
+      expect(api.activity.note.create).to.be.a('function');
+      expect(api.activity.note.read).to.be.a('function');
+      expect(api.activity.note.update).to.be.a('function');
+      expect(api.activity.note.delete).to.be.a('function');
+    });
+
+    it('should have all CRUD methods for email', () => {
+      expect(api.activity.email.search).to.be.a('function');
+      expect(api.activity.email.create).to.be.a('function');
+      expect(api.activity.email.read).to.be.a('function');
+      expect(api.activity.email.update).to.be.a('function');
+      expect(api.activity.email.delete).to.be.a('function');
+    });
+
+    it('should have all CRUD methods for call', () => {
+      expect(api.activity.call.search).to.be.a('function');
+      expect(api.activity.call.create).to.be.a('function');
+      expect(api.activity.call.read).to.be.a('function');
+      expect(api.activity.call.update).to.be.a('function');
+      expect(api.activity.call.delete).to.be.a('function');
+    });
+
+    it('should have all methods for sms (no update)', () => {
+      expect(api.activity.sms.search).to.be.a('function');
+      expect(api.activity.sms.create).to.be.a('function');
+      expect(api.activity.sms.read).to.be.a('function');
+      expect(api.activity.sms.delete).to.be.a('function');
+    });
+
+    it('should have all CRUD methods for meeting', () => {
+      expect(api.activity.meeting.search).to.be.a('function');
+      expect(api.activity.meeting.create).to.be.a('function');
+      expect(api.activity.meeting.read).to.be.a('function');
+      expect(api.activity.meeting.update).to.be.a('function');
+      expect(api.activity.meeting.delete).to.be.a('function');
+    });
+
+    it('should have all CRUD methods for whatsapp_message', () => {
+      expect(api.activity.whatsapp_message.search).to.be.a('function');
+      expect(api.activity.whatsapp_message.create).to.be.a('function');
+      expect(api.activity.whatsapp_message.read).to.be.a('function');
+      expect(api.activity.whatsapp_message.update).to.be.a('function');
+      expect(api.activity.whatsapp_message.delete).to.be.a('function');
+    });
+  });
+
+  describe('Custom Field Sub-Resources', () => {
+    it('should have all methods for lead custom fields', () => {
+      expect(api.custom_field.lead.list).to.be.a('function');
+      expect(api.custom_field.lead.create).to.be.a('function');
+      expect(api.custom_field.lead.read).to.be.a('function');
+      expect(api.custom_field.lead.update).to.be.a('function');
+      expect(api.custom_field.lead.delete).to.be.a('function');
+    });
+
+    it('should have all methods for contact custom fields', () => {
+      expect(api.custom_field.contact.list).to.be.a('function');
+      expect(api.custom_field.contact.create).to.be.a('function');
+      expect(api.custom_field.contact.read).to.be.a('function');
+      expect(api.custom_field.contact.update).to.be.a('function');
+      expect(api.custom_field.contact.delete).to.be.a('function');
+    });
+
+    it('should have all methods for opportunity custom fields', () => {
+      expect(api.custom_field.opportunity.list).to.be.a('function');
+      expect(api.custom_field.opportunity.create).to.be.a('function');
+      expect(api.custom_field.opportunity.read).to.be.a('function');
+      expect(api.custom_field.opportunity.update).to.be.a('function');
+      expect(api.custom_field.opportunity.delete).to.be.a('function');
+    });
+
+    it('should have all methods for activity custom fields', () => {
+      expect(api.custom_field.activity.list).to.be.a('function');
+      expect(api.custom_field.activity.create).to.be.a('function');
+      expect(api.custom_field.activity.read).to.be.a('function');
+      expect(api.custom_field.activity.update).to.be.a('function');
+      expect(api.custom_field.activity.delete).to.be.a('function');
+    });
+
+    it('should have all methods for custom_object_type custom fields', () => {
+      expect(api.custom_field.custom_object_type.list).to.be.a('function');
+      expect(api.custom_field.custom_object_type.create).to.be.a('function');
+      expect(api.custom_field.custom_object_type.read).to.be.a('function');
+      expect(api.custom_field.custom_object_type.update).to.be.a('function');
+      expect(api.custom_field.custom_object_type.delete).to.be.a('function');
+    });
+  });
+
+  describe('Status Sub-Resources', () => {
+    it('should have all methods for lead status', () => {
+      expect(api.status.lead.list).to.be.a('function');
+      expect(api.status.lead.create).to.be.a('function');
+      expect(api.status.lead.read).to.be.a('function');
+      expect(api.status.lead.update).to.be.a('function');
+      expect(api.status.lead.delete).to.be.a('function');
+    });
+
+    it('should have all methods for opportunity status', () => {
+      expect(api.status.opportunity.list).to.be.a('function');
+      expect(api.status.opportunity.create).to.be.a('function');
+      expect(api.status.opportunity.read).to.be.a('function');
+      expect(api.status.opportunity.update).to.be.a('function');
+      expect(api.status.opportunity.delete).to.be.a('function');
     });
   });
 });
