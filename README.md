@@ -79,3 +79,9 @@ const newLead: Lead = await api.lead.create({
 - Pagination: All search/list endpoints accept `limit`/`skip` or `_limit`/`_skip` and map them to Close's `_limit`/`_skip` parameters. You can also pass `fields`/`_fields` to limit response payloads.
 - Email threads: The `email_thread` resource uses the documented `/activity/emailthread/` endpoints.
 - Rate limits: 429 retries honor `RateLimit-Reset` headers when present, otherwise fall back to `Retry-After` or the configured `retryDelay`.
+
+## Wiki
+
+This repo includes a small Wiki in the `Wiki/` folder with usage examples and a method-by-method resource overview.
+
+- Start here: `Wiki/Home.md`

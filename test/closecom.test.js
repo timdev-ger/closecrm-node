@@ -52,7 +52,6 @@ describe('Closecom', () => {
       expect(api.lead.update).to.be.a('function');
       expect(api.lead.delete).to.be.a('function');
       expect(api.lead.merge).to.be.a('function');
-      expect(api.lead.convert).to.be.a('function');
     });
 
     it('should initialize contact resource', () => {
@@ -437,14 +436,7 @@ describe('Closecom', () => {
       }
     });
 
-    it('should throw error when converting lead without lead_id', async () => {
-      try {
-        await api.lead.convert({});
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error.message).to.include('Missing required fields: lead_id');
-      }
-    });
+    // lead.convert() was removed (undocumented endpoint)
   });
 
 

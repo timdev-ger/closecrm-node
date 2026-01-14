@@ -434,7 +434,6 @@ declare module 'closecrm-node' {
     update(id: string, data: Partial<Lead>): Promise<Lead>;
     delete(id: string): Promise<void>;
     merge(data: { source: string; destination: string }): Promise<Lead>;
-    convert(data: { lead_id: string }): Promise<any>;
   }
 
   export interface ContactResource {
