@@ -129,9 +129,8 @@ List/search activities across types.
 - `search(options = {})`
 - `create(data)`
 - `read(id)`
+- `update(id, data)`
 - `delete(id)`
-
-> Note: the client does **not** expose `update` for SMS.
 
 ### Meetings (`api.activity.meeting`)
 
@@ -148,6 +147,28 @@ List/search activities across types.
 - `read(id)`
 - `update(id, data)`
 - `delete(id)`
+
+### System activity types (read-only)
+
+These are generated automatically by Close and cannot be created or deleted.
+
+#### Creations (`api.activity.creation`)
+- `search(options = {})` / `read(id)`
+
+#### Form submissions (`api.activity.form_submission`)
+- `search(options = {})` / `read(id)`
+
+#### Lead status changes (`api.activity.lead_status_change`)
+- `search(options = {})` / `read(id)`
+
+#### Opportunity status changes (`api.activity.opportunity_status_change`)
+- `search(options = {})` / `read(id)`
+
+#### Lead merges (`api.activity.lead_merge`)
+- `search(options = {})` / `read(id)`
+
+#### Task completions (`api.activity.task_completion`)
+- `search(options = {})` / `read(id)`
 
 ---
 
@@ -213,6 +234,26 @@ List/search activities across types.
 - `update(id, data)`
 - `delete(id)`
 
+### Shared custom fields (`api.custom_field.shared`)
+
+Shared custom fields span multiple object types.
+
+- `list()`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+- `associations.list(scfId)` — list object associations for a shared field
+- `associations.create(scfId, data)` — add an association
+- `associations.delete(scfId, id)` — remove an association
+
+---
+
+## Custom field schema (`api.custom_field_schema`)
+
+- `read(objectType)` — e.g. `api.custom_field_schema.read('lead')`
+- `update(objectType, data)`
+
 ---
 
 ## Custom activities (`api.custom_activity`)
@@ -270,6 +311,10 @@ Get a user.
 
 Update a user.
 
+### `api.user.availability(options = {})`
+
+List user availability statuses.
+
 ---
 
 ## Organizations (`api.organization`)
@@ -317,6 +362,7 @@ Update a user.
 - `read(id)`
 - `update(id, data)`
 - `delete(id)`
+- `render(data)` — render a template with dynamic data (lead/contact context)
 
 ---
 
@@ -428,14 +474,228 @@ Close exposes email threads via activity endpoints.
 
 ---
 
+## SMS templates (`api.sms_template`)
+
+- `list(options = {})`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+---
+
+## Comments (`api.comment`)
+
+Comments can be attached to leads, opportunities, and other objects.
+
+- `list(options = {})` — filter by `object_id` or `thread_id`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+## Comment threads (`api.comment_thread`)
+
+- `list(options = {})`
+- `read(id)`
+
+---
+
+## File upload (`api.file`)
+
+Returns a signed S3 POST payload. Upload the file directly to S3 using the returned `url` and `fields`. Files are available for up to 24 hours.
+
+- `upload(data)` — POST `/files/upload/`
+
+```js
+const { url, fields } = await api.file.upload({ name: ‘document.pdf’ });
+// Use `url` and `fields` in a multipart/form-data POST to S3
+```
+
+---
+
+## Unsubscribed emails (`api.unsubscribed_email`)
+
+- `list(options = {})`
+- `create(data)` — add an email to the unsubscribe list, e.g. `{ email: ‘user@example.com’ }`
+- `delete(id)` — remove from unsubscribe list
+
+---
+
+## Outcomes (`api.outcome`)
+
+Standardized call/meeting result labels.
+
+- `list(options = {})`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+---
+
+## Integration links (`api.integration_link`)
+
+Custom tool connections shown in the Close UI on leads/contacts.
+
+- `list(options = {})`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+---
+
+## Memberships (`api.membership`)
+
+User–organization membership records.
+
+- `list(options = {})`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+---
+
+## Roles (`api.role`)
+
+Permission role definitions within an organization.
+
+- `list(options = {})`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+---
+
+## Groups (`api.group`)
+
+Named collections of users.
+
+- `list(options = {})`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+---
+
+## Exports (`api.export`)
+
+Asynchronous data extraction. Poll `read(id)` until `status === ‘complete’`.
+
+- `list(options = {})`
+- `read(id)` — get export status
+- `lead(data)` — POST `/export/lead/` — start a lead export
+- `opportunity(data)` — POST `/export/opportunity/` — start an opportunity export
+
+```js
+const exp = await api.export.lead({ query: ‘status:"Active"’ });
+// poll
+let result;
+do {
+  result = await api.export.read(exp.id);
+} while (result.status !== ‘complete’);
+console.log(result.download_url);
+```
+
+---
+
+## Field enrichment (`api.field_enrichment`)
+
+AI-powered field population. May consume credits.
+
+- `enrich(data)` — POST `/field_enrichment/`
+
+```js
+await api.field_enrichment.enrich({
+  lead_id: ‘lead_xxx’,
+  field_id: ‘cf_yyy’
+});
+```
+
+---
+
+## Scheduling links (`api.scheduling_link`)
+
+Meeting booking integrations (Calendly, etc.).
+
+- `list(options = {})`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+---
+
+## Phone numbers (`api.phone_number`)
+
+Close-provisioned phone numbers.
+
+- `list(options = {})` — list numbers in the org
+- `create(data)` — provision a new number
+
+---
+
+## Dialer (`api.dialer`)
+
+Dialer session management.
+
+- `list(options = {})`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+---
+
+## Send As (`api.send_as`)
+
+Proxy email sending addresses.
+
+- `list(options = {})`
+- `create(data)`
+- `read(id)`
+- `update(id, data)`
+- `delete(id)`
+
+---
+
+## Custom field schema (`api.custom_field_schema`)
+
+Retrieve or update the schema definition for a given object type.
+
+- `read(objectType)` — GET `/custom_field_schema/{objectType}/`
+- `update(objectType, data)` — PUT `/custom_field_schema/{objectType}/`
+
+---
+
 ## Bulk actions (`api.bulk`)
 
-Bulk endpoints accept payloads as defined by Close’s API.
+### Legacy shortcuts
 
 - `delete(data)` — POST `/bulk_delete/`
 - `email(data)` — POST `/bulk_email/`
 - `update(data)` — POST `/bulk_update/`
 - `action(data)` — POST `/bulk_action/`
+
+### Structured sub-resources
+
+Each sub-resource supports `list`, `create`, and `read(id)` to track async status.
+
+#### `api.bulk.emails`
+- `list(options = {})` / `create(data)` / `read(id)`
+
+#### `api.bulk.edits`
+- `list(options = {})` / `create(data)` / `read(id)`
+
+#### `api.bulk.deletes`
+- `list(options = {})` / `create(data)` / `read(id)`
+
+#### `api.bulk.sequence_subscriptions`
+- `list(options = {})` / `create(data)` / `read(id)`
 
 ---
 
