@@ -472,6 +472,7 @@ declare module 'closecrm-node' {
     search(options?: SearchOptions): Promise<PaginatedResponse<SMS>>;
     create(data: Partial<SMS>): Promise<SMS>;
     read(id: string): Promise<SMS>;
+    update(id: string, data: Partial<SMS>): Promise<SMS>;
     delete(id: string): Promise<void>;
   }
 
@@ -491,6 +492,11 @@ declare module 'closecrm-node' {
     delete(id: string): Promise<void>;
   }
 
+  export interface SystemActivityResource {
+    search(options?: SearchOptions): Promise<PaginatedResponse<Activity>>;
+    read(id: string): Promise<Activity>;
+  }
+
   export interface ActivityResource {
     search(options?: SearchOptions): Promise<PaginatedResponse<Activity>>;
     note: NoteResource;
@@ -499,6 +505,12 @@ declare module 'closecrm-node' {
     sms: SMSResource;
     meeting: MeetingResource;
     whatsapp_message: WhatsAppMessageResource;
+    creation: SystemActivityResource;
+    form_submission: SystemActivityResource;
+    lead_status_change: SystemActivityResource;
+    opportunity_status_change: SystemActivityResource;
+    lead_merge: SystemActivityResource;
+    task_completion: SystemActivityResource;
   }
 
   export interface OpportunityResource {
@@ -525,12 +537,28 @@ declare module 'closecrm-node' {
     delete(id: string): Promise<void>;
   }
 
+  export interface CustomFieldSharedAssociations {
+    list(scfId: string): Promise<PaginatedResponse<any>>;
+    create(scfId: string, data: any): Promise<any>;
+    delete(scfId: string, id: string): Promise<void>;
+  }
+
+  export interface CustomFieldSharedResource extends CustomFieldSubResource {
+    associations: CustomFieldSharedAssociations;
+  }
+
   export interface CustomFieldResource {
     lead: CustomFieldSubResource;
     contact: CustomFieldSubResource;
     opportunity: CustomFieldSubResource;
     activity: CustomFieldSubResource;
     custom_object_type: CustomFieldSubResource;
+    shared: CustomFieldSharedResource;
+  }
+
+  export interface CustomFieldSchemaResource {
+    read(objectType: string): Promise<any>;
+    update(objectType: string, data: any): Promise<any>;
   }
 
   export interface CustomActivityResource {
@@ -562,6 +590,7 @@ declare module 'closecrm-node' {
     list(options?: SearchOptions): Promise<PaginatedResponse<User>>;
     read(id: string): Promise<User>;
     update(id: string, data: Partial<User>): Promise<User>;
+    availability(options?: SearchOptions): Promise<PaginatedResponse<any>>;
   }
 
   export interface OrganizationResource {
@@ -596,6 +625,27 @@ declare module 'closecrm-node' {
     create(data: Partial<EmailTemplate>): Promise<EmailTemplate>;
     read(id: string): Promise<EmailTemplate>;
     update(id: string, data: Partial<EmailTemplate>): Promise<EmailTemplate>;
+    delete(id: string): Promise<void>;
+    render(data: { template_id: string; lead_id?: string; contact_id?: string; [key: string]: any }): Promise<any>;
+  }
+
+  export interface SMSTemplate {
+    id: string;
+    name: string;
+    body: string;
+    is_shared?: boolean;
+    created_by?: string;
+    date_created: string;
+    date_updated: string;
+    organization_id: string;
+    [key: string]: any;
+  }
+
+  export interface SMSTemplateResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<SMSTemplate>>;
+    create(data: Partial<SMSTemplate>): Promise<SMSTemplate>;
+    read(id: string): Promise<SMSTemplate>;
+    update(id: string, data: Partial<SMSTemplate>): Promise<SMSTemplate>;
     delete(id: string): Promise<void>;
   }
 
@@ -735,11 +785,253 @@ declare module 'closecrm-node' {
     read(id: string): Promise<Import>;
   }
 
+  export interface BulkSubResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<any>>;
+    create(data: any): Promise<any>;
+    read(id: string): Promise<any>;
+  }
+
   export interface BulkResource {
     delete(data: { type: string; ids: string[] }): Promise<any>;
     email(data: any): Promise<any>;
     update(data: any): Promise<any>;
     action(data: any): Promise<any>;
+    emails: BulkSubResource;
+    edits: BulkSubResource;
+    deletes: BulkSubResource;
+    sequence_subscriptions: BulkSubResource;
+  }
+
+  // ---- New resource data interfaces ----
+
+  export interface Comment {
+    id: string;
+    object_id: string;
+    object_type: string;
+    thread_id?: string;
+    body: string;
+    body_html?: string;
+    created_by?: string;
+    date_created: string;
+    date_updated: string;
+    organization_id: string;
+    [key: string]: any;
+  }
+
+  export interface CommentThread {
+    id: string;
+    object_id: string;
+    object_type: string;
+    comment_count?: number;
+    date_created: string;
+    date_updated: string;
+    organization_id: string;
+    [key: string]: any;
+  }
+
+  export interface Outcome {
+    id: string;
+    label: string;
+    type: 'call' | 'meeting' | string;
+    organization_id: string;
+    date_created: string;
+    date_updated: string;
+    [key: string]: any;
+  }
+
+  export interface IntegrationLink {
+    id: string;
+    name: string;
+    url_template: string;
+    object_type: string;
+    organization_id: string;
+    date_created: string;
+    date_updated: string;
+    [key: string]: any;
+  }
+
+  export interface Membership {
+    id: string;
+    user_id: string;
+    organization_id: string;
+    role_id?: string;
+    date_created: string;
+    date_updated: string;
+    [key: string]: any;
+  }
+
+  export interface Role {
+    id: string;
+    name: string;
+    organization_id: string;
+    date_created: string;
+    date_updated: string;
+    [key: string]: any;
+  }
+
+  export interface Group {
+    id: string;
+    name: string;
+    members?: string[];
+    organization_id: string;
+    date_created: string;
+    date_updated: string;
+    [key: string]: any;
+  }
+
+  export interface Export {
+    id: string;
+    status: 'pending' | 'processing' | 'complete' | 'failed';
+    type: 'lead' | 'opportunity';
+    download_url?: string;
+    date_created: string;
+    organization_id: string;
+    [key: string]: any;
+  }
+
+  export interface SchedulingLink {
+    id: string;
+    name: string;
+    url?: string;
+    duration_minutes?: number;
+    connected_account_id?: string;
+    organization_id: string;
+    date_created: string;
+    date_updated: string;
+    [key: string]: any;
+  }
+
+  export interface PhoneNumber {
+    id: string;
+    phone: string;
+    phone_formatted?: string;
+    country?: string;
+    organization_id: string;
+    [key: string]: any;
+  }
+
+  export interface Dialer {
+    id: string;
+    status?: string;
+    organization_id: string;
+    date_created: string;
+    date_updated: string;
+    [key: string]: any;
+  }
+
+  export interface SendAs {
+    id: string;
+    email: string;
+    name?: string;
+    organization_id: string;
+    date_created: string;
+    date_updated: string;
+    [key: string]: any;
+  }
+
+  // ---- New resource interfaces ----
+
+  export interface CommentResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<Comment>>;
+    create(data: Partial<Comment>): Promise<Comment>;
+    read(id: string): Promise<Comment>;
+    update(id: string, data: Partial<Comment>): Promise<Comment>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface CommentThreadResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<CommentThread>>;
+    read(id: string): Promise<CommentThread>;
+  }
+
+  export interface FileResource {
+    upload(data: { name: string; [key: string]: any }): Promise<{ url: string; fields: Record<string, string> }>;
+  }
+
+  export interface UnsubscribedEmailResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<{ id: string; email: string; [key: string]: any }>>;
+    create(data: { email: string }): Promise<{ id: string; email: string }>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface OutcomeResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<Outcome>>;
+    create(data: Partial<Outcome>): Promise<Outcome>;
+    read(id: string): Promise<Outcome>;
+    update(id: string, data: Partial<Outcome>): Promise<Outcome>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface IntegrationLinkResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<IntegrationLink>>;
+    create(data: Partial<IntegrationLink>): Promise<IntegrationLink>;
+    read(id: string): Promise<IntegrationLink>;
+    update(id: string, data: Partial<IntegrationLink>): Promise<IntegrationLink>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface MembershipResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<Membership>>;
+    create(data: Partial<Membership>): Promise<Membership>;
+    read(id: string): Promise<Membership>;
+    update(id: string, data: Partial<Membership>): Promise<Membership>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface RoleResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<Role>>;
+    create(data: Partial<Role>): Promise<Role>;
+    read(id: string): Promise<Role>;
+    update(id: string, data: Partial<Role>): Promise<Role>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface GroupResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<Group>>;
+    create(data: Partial<Group>): Promise<Group>;
+    read(id: string): Promise<Group>;
+    update(id: string, data: Partial<Group>): Promise<Group>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface ExportResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<Export>>;
+    read(id: string): Promise<Export>;
+    lead(data: { query?: string; [key: string]: any }): Promise<Export>;
+    opportunity(data: { query?: string; [key: string]: any }): Promise<Export>;
+  }
+
+  export interface FieldEnrichmentResource {
+    enrich(data: { lead_id?: string; contact_id?: string; field_id: string; [key: string]: any }): Promise<any>;
+  }
+
+  export interface SchedulingLinkResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<SchedulingLink>>;
+    create(data: Partial<SchedulingLink>): Promise<SchedulingLink>;
+    read(id: string): Promise<SchedulingLink>;
+    update(id: string, data: Partial<SchedulingLink>): Promise<SchedulingLink>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface PhoneNumberResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<PhoneNumber>>;
+    create(data: Partial<PhoneNumber>): Promise<PhoneNumber>;
+  }
+
+  export interface DialerResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<Dialer>>;
+    create(data: Partial<Dialer>): Promise<Dialer>;
+    read(id: string): Promise<Dialer>;
+    update(id: string, data: Partial<Dialer>): Promise<Dialer>;
+    delete(id: string): Promise<void>;
+  }
+
+  export interface SendAsResource {
+    list(options?: SearchOptions): Promise<PaginatedResponse<SendAs>>;
+    create(data: Partial<SendAs>): Promise<SendAs>;
+    read(id: string): Promise<SendAs>;
+    update(id: string, data: Partial<SendAs>): Promise<SendAs>;
+    delete(id: string): Promise<void>;
   }
 
   export class QueryBuilder {
@@ -767,14 +1059,19 @@ declare module 'closecrm-node' {
     opportunity: OpportunityResource;
     task: TaskResource;
     custom_field: CustomFieldResource;
+    custom_field_schema: CustomFieldSchemaResource;
     custom_activity: CustomActivityResource;
     custom_object_type: CustomObjectTypeResource;
     custom_object: CustomObjectResource;
     user: UserResource;
     organization: OrganizationResource;
+    membership: MembershipResource;
+    role: RoleResource;
+    group: GroupResource;
     pipeline: PipelineResource;
     status: StatusResource;
     email_template: EmailTemplateResource;
+    sms_template: SMSTemplateResource;
     saved_search: SavedSearchResource;
     smart_view: SavedSearchResource;
     sequence: SequenceResource;
@@ -784,6 +1081,18 @@ declare module 'closecrm-node' {
     webhook: WebhookResource;
     email_thread: EmailThreadResource;
     connected_account: ConnectedAccountResource;
+    comment: CommentResource;
+    comment_thread: CommentThreadResource;
+    file: FileResource;
+    unsubscribed_email: UnsubscribedEmailResource;
+    outcome: OutcomeResource;
+    integration_link: IntegrationLinkResource;
+    export: ExportResource;
+    field_enrichment: FieldEnrichmentResource;
+    scheduling_link: SchedulingLinkResource;
+    phone_number: PhoneNumberResource;
+    dialer: DialerResource;
+    send_as: SendAsResource;
     bulk: BulkResource;
 
     query(): QueryBuilder;
